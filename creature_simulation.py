@@ -67,6 +67,34 @@ class FlyingCreature(Creature):
         if target.hp < 0:
             target.hp = 0
         print(f"{target.name} HP is now {target.hp}")
+# ===============================
+# FireCreature Branch
+# ===============================
+
+class FireCreature(Creature):
+    def __init__(self, name, hp, attack_power):
+        super().__init__(name, hp, attack_power)
+        self.fire_level = 0
+
+    def emit_fire(self, new_fire_level):
+        self.fire_level = new_fire_level
+        print(f"{self.name} ")
+
+    def attack(self, target):
+        if not self.is_alive():
+            print(f"{self.name} cannot attack because it is defeated.")
+            return
+
+        bonus = self.fire_level // 10
+        total_damage = self.attack_power + bonus
+
+        print(f"{self.name} engulfs {target.name} in flames (fire level {self.fire_level})!")
+        print(f"It burns {target.name} for {total_damage} damage!")
+        target.hp -= total_damage
+        if target.hp < 0:
+            target.hp = 0
+        print(f"{target.name} HP is now {target.hp}")
+
 
 if __name__ == "__main__":
     print("=== Creature Class Tests ===\n")
@@ -141,3 +169,26 @@ if __name__ == "__main__":
     print()
     print("=== Tests Completed ===")
     print()
+
+    print("=== FireCreature Tests ===\n")
+    drake = FireCreature("Fire Drake", 80, 10)
+    drake.emit_fire(50)
+    print(f"Fire level should be 50 → Actual: {drake.fire_level}")
+
+    drake.emit_fire(150)
+    print(f"Fire level should be capped at 100 → Actual: {drake.fire_level}")
+
+    drake.emit_fire(50)
+    dummy = Creature("Practice Dummy", 40, 0)
+    drake.attack(dummy)
+    print(f"Dummy HP should be 25 → Actual: {dummy.hp}")
+
+    weak = Creature("Weak Target", 5, 0)
+    drake.attack(weak)
+    print(f"Weak Target HP should be 0 → Actual: {weak.hp}")
+
+    drake.hp = 0
+    drake.attack(dummy)  # Should say it cannot attack
+    print(f"Dummy HP should remain 25 → Actual: {dummy.hp}")
+    print()
+    print("=== Tests Completed ===")
